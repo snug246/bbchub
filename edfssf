@@ -1,0 +1,127 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Nigger hub", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+local Tab0 = Window:MakeTab({
+	Name = "NIGGER",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Tab:AddButton({
+	Name = "FLY",
+	Callback = function()
+loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\40\39\104\116\116\112\115\58\47\47\103\105\115\116\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\109\101\111\122\111\110\101\89\84\47\98\102\48\51\55\100\102\102\57\102\48\97\55\48\48\49\55\51\48\52\100\100\100\54\55\102\100\99\100\51\55\48\47\114\97\119\47\101\49\52\101\55\52\102\52\50\53\98\48\54\48\100\102\53\50\51\51\52\51\99\102\51\48\98\55\56\55\48\55\52\101\98\51\99\53\100\50\47\97\114\99\101\117\115\37\50\53\50\48\120\37\50\53\50\48\102\108\121\37\50\53\50\48\50\37\50\53\50\48\111\98\102\108\117\99\97\116\111\114\39\41\44\116\114\117\101\41\41\40\41\10\10")()
+      		print("button pressed")
+  	end    
+})
+
+Tab:AddButton({
+	Name = "autofish",
+	Callback = function()
+- Originally released on v3rmillion by https-://v3rm.net/threads/fisch-auto-fish.13532/
+local Players = game:GetService('Players')
+local CoreGui = game:GetService('StarterGui')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local ContextActionService = game:GetService('ContextActionService')
+local VirtualInputManager = game:GetService('VirtualInputManager')
+
+local LocalPlayer = Players.LocalPlayer
+
+local Enabled = false
+local Rod = false
+local Casted = false
+local Progress = false
+local Finished = false
+
+local Keybind = Enum.KeyCode.F
+
+function ShowNotification(String)
+    CoreGui:SetCore('SendNotification', {
+        Title = 'Notification',
+        Text = String,
+        Duration = 1
+    })
+end
+
+function ToggleFarm(Name, State, Input)
+    if State == Enum.UserInputState.Begin then
+        Enabled = not Enabled
+        LocalPlayer.Character.HumanoidRootPart.Anchored = Enabled
+        
+        if not Enabled then
+            Finished = false
+            Progress = false
+            
+            if Rod then
+                Rod.events.reset:FireServer()
+            end
+        end
+        
+        ShowNotification(`Status: {Enabled}`)
+    end
+end
+
+LocalPlayer.Character.ChildAdded:Connect(function(Child)
+    if Child:IsA('Tool') and Child.Name:lower():find('rod') then
+        Rod = Child
+    end
+end)
+
+LocalPlayer.Character.ChildRemoved:Connect(function(Child)
+    if Child == Rod then
+        Enabled = false
+        Finished = false
+        Progress = false
+        Rod = nil
+    end
+end)
+
+LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
+    if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
+        task.wait(0.1)
+        local ButtonPosition, ButtonSize = Descendant.AbsolutePosition, Descendant.AbsoluteSize
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, true, LocalPlayer.PlayerGui, 1)
+        VirtualInputManager:SendMouseButtonEvent(ButtonPosition.X + (ButtonSize.X / 2), ButtonPosition.Y + (ButtonSize.Y / 2), Enum.UserInputType.MouseButton1.Value, false, LocalPlayer.PlayerGui, 1)
+    elseif Descendant.Name == 'playerbar' and Descendant.Parent.Name == 'bar' then
+        Finished = true
+        Descendant:GetPropertyChangedSignal('Position'):Wait()
+        ReplicatedStorage.events.reelfinished:FireServer(100, true)
+    end
+end)
+
+LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(Descendant)
+    if Descendant.Name == 'reel' then
+        Finished = false
+        Progress = false
+    end
+end)
+
+coroutine.wrap(function()
+    while true do
+        if Enabled and not Progress then
+            if Rod then
+                Progress = true
+                task.wait(0.5)
+                Rod.events.reset:FireServer()
+                Rod.events.cast:FireServer(100.5)
+            end
+        end
+    
+        task.wait()
+    end
+end)()
+
+local NewRod = LocalPlayer.Character:FindFirstChildWhichIsA('Tool')
+
+if NewRod and NewRod.Name:lower():find('rod') then
+    Rod = NewRod
+end
+
+ContextActionService:BindAction('ToggleFarm', ToggleFarm, false, Keybind)
+ShowNotification(`Press '{Keybind.Name}' to enable/disable`)
+      		print("button pressed")
+  	end    
+})
+
+OrionLib:Init()
